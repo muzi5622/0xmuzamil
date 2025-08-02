@@ -1,10 +1,7 @@
-
-
-````md
 ---
 title: Getting Started with Docker – Containers, Images & the Basics
 author: M. Muzamil
-pubDatetime: 2025-08-01T20:00:00Z
+pubDatetime: 2025-07-31T20:00:00Z
 slug: docker-basics-core-concepts
 featured: false
 draft: false
@@ -22,6 +19,8 @@ timezone: "Asia/Karachi"
 > 🎯 Whether you're just exploring containers or preparing for real-world DevOps, this guide will set the stage.
 
 ---
+![Docker](https://c4.wallpaperflare.com/wallpaper/414/284/24/docker-containers-brand-wallpaper-preview.jpg)
+
 
 ##  Table of Contents
 
