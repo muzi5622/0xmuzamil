@@ -1,9 +1,9 @@
 ---
 title: "Geo OSINT Challenge – TRYHACKME Room Write-Up"
 author: M. Muzamil
-pubDatetime: 2025-08-22T03:30:00Z
+pubDatetime: 2025-08-21T03:30:00Z
 slug: geo-osint-thm-write-up
-featured: false
+featured: True
 draft: false
 tags:
   - OSINT
