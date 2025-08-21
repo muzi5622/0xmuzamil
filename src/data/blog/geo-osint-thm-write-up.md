@@ -72,5 +72,4 @@ The Shell petrol station logo and branding on the left side of the image confirm
 ## 💡 Takeaway
 A single bus route number gave away the entire location.  
 With patience and smart use of **Google Maps** + **Street View**, OSINT investigators can turn the smallest hints into verified intelligence.
-```
 
