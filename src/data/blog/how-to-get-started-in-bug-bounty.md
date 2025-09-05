@@ -3,7 +3,7 @@ title: How I Got Started in Bug Bounty (And How You Can Too)
 author: M. Muzamil
 pubDatetime: 2025-07-29T20:00:00Z
 slug: how-to-get-started-in-bug-bounty
-featured: true
+featured: false
 draft: false
 tags:
   - Cybersecurity
@@ -24,16 +24,18 @@ timezone: "Asia/Karachi"
 
 ## Table of Contents
 
-- [Intro](#intro)
-- [What is Bug Bounty?](#what-is-bug-bounty)
-- [Skills You Need (But Don’t Panic)](#skills-you-need-but-dont-panic)
-- [Toolbox for Starters](#toolbox-for-starters)
-- [Platforms to Join](#platforms-to-join)
-- [How to Practice](#how-to-practice)
-- [Tips from My Early Days](#tips-from-my-early-days)
-- [Common Beginner Mistakes](#common-beginner-mistakes)
-- [FAQ](#faq)
-- [Outro](#outro)
+- [Table of Contents](#table-of-contents)
+- [🧠 Intro](#-intro)
+- [🐞 What is Bug Bounty?](#-what-is-bug-bounty)
+- [🧰 Skills You Need (But Don’t Panic)](#-skills-you-need-but-dont-panic)
+- [🔧 Toolbox for Starters](#-toolbox-for-starters)
+- [🌐 Platforms to Join](#-platforms-to-join)
+- [🧪 How to Practice](#-how-to-practice)
+- [💡 Tips from My Early Days](#-tips-from-my-early-days)
+- [🚫 Common Beginner Mistakes](#-common-beginner-mistakes)
+- [❓ FAQ](#-faq)
+- [❤️ Outro](#️-outro)
+- [🧭 Useful Links](#-useful-links)
 
 ---
 

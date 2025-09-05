@@ -3,7 +3,7 @@ title: Understanding the Hacker Mindset – It’s Not Just Code
 author: M. Muzamil
 pubDatetime: 2025-06-31T21:15:00Z
 slug: understanding-the-hacker-mindset
-featured: true
+featured: false
 draft: false
 tags:
   - Mindset
@@ -24,6 +24,7 @@ timezone: "Asia/Karachi"
 
 ##  Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Intro](#intro)
 - [What Is the Hacker Mindset?](#what-is-the-hacker-mindset)
 - [Curiosity Over Everything](#curiosity-over-everything)
@@ -31,7 +32,7 @@ timezone: "Asia/Karachi"
 - [Failing and Trying Again](#failing-and-trying-again)
 - [Think Like Water (Yes, Really)](#think-like-water-yes-really)
 - [Daily Habits to Build It](#daily-habits-to-build-it)
-- [Outro](#outro)
+- [❤️ Outro](#️-outro)
 
 ---
 
