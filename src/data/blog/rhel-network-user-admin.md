@@ -1,7 +1,7 @@
 ---
 title: "RHEL Intensive – Network, User, and System Administration: A Beginner’s Guide"
 author: M. Muzamil
-pubDatetime: 2025-09-05T20:21:00Z
+pubDatetime: 2025-09-04T20:21:00Z
 slug: rhel-network-user-admin
 featured: false
 draft: false
