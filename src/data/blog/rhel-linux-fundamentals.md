@@ -1,7 +1,7 @@
 ---
 title: RHEL Intensive – Linux Fundamentals: A Beginner-Friendly Guide
 author: M. Muzamil
-pubDatetime: 2025-09-05T19:49:00Z
+pubDatetime: 2025-09-04T19:49:00Z
 slug: rhel-linux-fundamentals
 featured: false
 draft: false

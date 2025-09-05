@@ -10,7 +10,8 @@
     "astro": "astro",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "vercel-build": "pnpm install --unsafe-perm && astro build"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.12",
