@@ -2,16 +2,15 @@
   "name": "better-belt",
   "type": "module",
   "version": "5.5.0",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && npx pagefind --source dist --ui",
-    "preview": "astro preview",
-    "sync": "astro sync",
-    "astro": "astro",
-    "format:check": "prettier --check .",
-    "format": "prettier --write .",
-    "lint": "eslint ."
-  },
+ "scripts": {
+  "dev": "npx astro dev",
+  "build": "npx astro build && npx pagefind --source dist --ui",
+  "preview": "npx astro preview",
+  "sync": "npx astro sync",
+  "format:check": "prettier --check .",
+  "format": "prettier --write .",
+  "lint": "eslint ."
+},
   "dependencies": {
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.4.1",
