@@ -2,9 +2,9 @@
   "name": "better-belt",
   "type": "module",
   "version": "5.5.0",
- "scripts": {
+"scripts": {
   "dev": "npx astro dev",
-  "build": "npx astro build && npx pagefind --source dist --ui",
+  "build": "npx astro build && npx pagefind --source dist",
   "preview": "npx astro preview",
   "sync": "npx astro sync",
   "format:check": "prettier --check .",
