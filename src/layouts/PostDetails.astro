@@ -1,6 +1,5 @@
 ---
 import { render, type CollectionEntry } from "astro:content";
-import TableOfContents from "@/components/TableOfContents.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -179,7 +178,7 @@ const nextPost =
       >
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
-    {tocHeadings.length > 0 && <TableOfContents headings={tocHeadings} />}
+  
     <article
       id="article"
       class="app-prose mx-auto mt-8 max-w-app prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
