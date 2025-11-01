@@ -263,6 +263,83 @@ const structuredData = {
                 footer.appendChild(wrapper);
               }
             }
+            
+            // Mid-post HighPerformanceFormat (key: 5720c675ed7e86d1fc1cd95cc7de6ab1)
+            (function ensureMidPostAd() {
+              const MID_KEY = "5720c675ed7e86d1fc1cd95cc7de6ab1";
+              const MID_SRC_PART = "/5720c675ed7e86d1fc1cd95cc7de6ab1/invoke.js";
+
+              function alreadyHasMid() {
+                // check for our marker or an existing script for the same key
+                if (document.querySelector('[data-hpf-mid]')) return true;
+                return Array.from(document.scripts).some(s => s.src && s.src.includes(MID_SRC_PART));
+              }
+
+              function insertMid(article) {
+                try {
+                  if (!article || alreadyHasMid()) return;
+
+                  const paragraphs = Array.from(article.querySelectorAll("p"));
+                  let refNode = null;
+                  if (paragraphs.length) {
+                    const idx = Math.floor(paragraphs.length / 2);
+                    refNode = paragraphs[idx];
+                  } else {
+                    refNode = article.firstElementChild;
+                  }
+
+                  const mid = document.createElement("div");
+                  mid.setAttribute("data-hpf-mid", "1");
+                  mid.className = "my-6 flex justify-center";
+
+                  const atOptionsMid = document.createElement("script");
+                  atOptionsMid.type = "text/javascript";
+                  atOptionsMid.innerHTML = "atOptions = { 'key' : '5720c675ed7e86d1fc1cd95cc7de6ab1', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };";
+                  mid.appendChild(atOptionsMid);
+
+                  const invokeMid = document.createElement("script");
+                  invokeMid.type = "text/javascript";
+                  invokeMid.src = "//www.highperformanceformat.com/5720c675ed7e86d1fc1cd95cc7de6ab1/invoke.js";
+                  mid.appendChild(invokeMid);
+
+                  if (refNode && refNode.parentNode) {
+                    refNode.parentNode.insertBefore(mid, refNode);
+                  } else {
+                    article.appendChild(mid);
+                  }
+                } catch (e) {
+                  // non-fatal
+                }
+              }
+
+              // Wait for #article to exist using MutationObserver with timeout
+              if (alreadyHasMid()) return;
+
+              const existingArticle = document.getElementById("article");
+              if (existingArticle) {
+                insertMid(existingArticle);
+                return;
+              }
+
+              let done = false;
+              const mo = new MutationObserver((records, obs) => {
+                const art = document.getElementById("article");
+                if (art) {
+                  obs.disconnect();
+                  done = true;
+                  insertMid(art);
+                }
+              });
+              mo.observe(document.documentElement || document.body, { childList: true, subtree: true });
+
+              // Fallback timeout
+              setTimeout(() => {
+                if (done) return;
+                const art = document.getElementById("article");
+                if (art) insertMid(art);
+                mo.disconnect();
+              }, 2000);
+            })();
           } catch (e) {
             // Non-fatal — don't break the page
           }
