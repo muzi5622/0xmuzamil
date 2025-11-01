@@ -1,11 +1,8 @@
 ---
 import Hr from "./Hr.astro";
-import IconX from "@/assets/icons/IconX.svg";
 import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconSearch from "@/assets/icons/IconSearch.svg";
-import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
-import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config";
 
@@ -44,25 +41,47 @@ const isActive = (path: string) => {
   </div>
   <Hr />
 
-  <!-- Header search popup -->
+  <!-- Header search popup container -->
   <div id="header-search-container" class="fixed top-16 right-4 z-50 w-80 max-w-full p-2 bg-background shadow-lg rounded-md hidden">
-    <pagefind-ui></pagefind-ui>
+    <!-- Pagefind UI will be injected dynamically -->
   </div>
 </header>
 
 <!-- Load Pagefind JS -->
 <script type="module" src="/pagefind/pagefind.js"></script>
 
-<script>
-  // Toggle header search popup
+<script type="module">
   const btn = document.getElementById("search-btn");
   const container = document.getElementById("header-search-container");
 
-  btn?.addEventListener("click", () => {
+  let initialized = false;
+
+  btn?.addEventListener("click", async () => {
     if (!container) return;
+
+    // Initialize Pagefind UI only once
+    if (!initialized) {
+      const pagefindEl = document.createElement("pagefind-ui");
+      container.appendChild(pagefindEl);
+
+      // Wait for the custom element to be defined
+      await customElements.whenDefined("pagefind-ui");
+
+      // Focus the search input
+      const input = pagefindEl.shadowRoot?.querySelector("input") || pagefindEl.querySelector("input");
+      input?.focus();
+
+      initialized = true;
+    }
+
+    // Toggle visibility
     container.classList.toggle("hidden");
-    const input = container.querySelector("input");
-    input?.focus();
+
+    // Focus input when reopening
+    if (!container.classList.contains("hidden")) {
+      const input = container.querySelector("input");
+      input?.focus();
+    }
   });
 </script>
 

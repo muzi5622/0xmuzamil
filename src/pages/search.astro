@@ -1,26 +1,42 @@
 ---
-import "@pagefind/default-ui/css/ui.css";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import Main from "@/layouts/Main.astro";
 import { SITE } from "@/config";
 ---
 
 <Layout title={`Search | ${SITE.title}`}>
   <Header />
   <Main pageTitle="Search" pageDesc="Search any article ...">
-    <pagefind-ui></pagefind-ui>
+    <!-- Pagefind full-page search -->
+    <div id="search-container" class="w-full max-w-3xl mx-auto mt-4">
+      <pagefind-ui></pagefind-ui>
+    </div>
   </Main>
   <Footer />
 </Layout>
 
+<!-- Load Pagefind JS -->
 <script type="module" src="/pagefind/pagefind.js"></script>
 
+<script type="module">
+  // Focus search input automatically when page loads
+  const searchContainer = document.getElementById("search-container");
+  customElements.whenDefined("pagefind-ui").then(() => {
+    const pagefindEl = searchContainer.querySelector("pagefind-ui");
+    const input = pagefindEl.shadowRoot?.querySelector("input") || pagefindEl.querySelector("input");
+    input?.focus();
+  });
+</script>
+
 <style is:global>
-  pagefind-ui {
+  #search-container pagefind-ui {
     display: block;
-    margin-top: 1rem;
+    width: 100%;
+  }
+
+  pagefind-ui {
     --pagefind-ui-font: var(--font-mono);
     --pagefind-ui-text: var(--foreground);
     --pagefind-ui-background: var(--background);
@@ -28,5 +44,7 @@ import { SITE } from "@/config";
     --pagefind-ui-primary: var(--accent);
     --pagefind-ui-border-radius: 0.375rem;
     --pagefind-ui-border-width: 1px;
+    --pagefind-ui-image-border-radius: 8px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
   }
 </style>
