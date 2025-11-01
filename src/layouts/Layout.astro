@@ -3,7 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
 import "@/styles/global.css";
-import Analytics from '@vercel/analytics/astro'
+import Analytics from "@vercel/analytics/astro";
 
 export interface Props {
   title?: string;
@@ -23,13 +23,13 @@ const {
   profile = SITE.profile,
   description = SITE.desc,
   ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
-  canonicalURL = new URL(Astro.url.pathname, Astro.url),
+  canonicalURL = new URL(Astro.url.pathname, Astro.site),
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
 } = Astro.props;
 
-const socialImageURL = new URL(ogImage, Astro.url);
+const socialImageURL = new URL(ogImage, Astro.site);
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -56,8 +56,10 @@ const structuredData = {
 >
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- ✅ Fixed: Single canonical tag only -->
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
@@ -69,6 +71,7 @@ const structuredData = {
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
@@ -83,84 +86,94 @@ const structuredData = {
     )}
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={socialImageURL} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageURL} />
 
     <!-- Google JSON-LD Structured data -->
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(structuredData)} />
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(structuredData)}
+    />
 
     <!-- Enable RSS feed auto-discovery -->
-    <link rel="alternate" type="application/rss+xml" title={SITE.title} href={new URL("rss.xml", Astro.site)} />
-    <link rel="canonical" href="https://0xmuzamil.dev/" />
-    <meta name="theme-color" content="" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={SITE.title}
+      href={new URL("rss.xml", Astro.site)}
+    />
 
+    <!-- Theme & Verification -->
+    <meta name="theme-color" content="#000000" />
     {PUBLIC_GOOGLE_SITE_VERIFICATION && (
-      <meta name="google-site-verification" content={PUBLIC_GOOGLE_SITE_VERIFICATION} />
+      <meta
+        name="google-site-verification"
+        content={PUBLIC_GOOGLE_SITE_VERIFICATION}
+      />
     )}
 
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-63XWFN2EZ7"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-63XWFN2EZ7"
+    ></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-63XWFN2EZ7');
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-63XWFN2EZ7");
     </script>
 
     <ClientRouter />
-
     <script is:inline src="/toggle-theme.js"></script>
   </head>
+
   <body>
     <slot />
+    <Analytics />
+
+    <!-- Cleanup for third-party injected scripts -->
     <script is:inline>
       (function () {
-        const adHosts = ['highperformanceformat.com', 'effectivegatecpm.com'];
-
+        const adHosts = ["highperformanceformat.com", "effectivegatecpm.com"];
         function shouldHandle(src) {
           if (!src) return false;
-          return adHosts.some(h => src.includes(h));
+          return adHosts.some((h) => src.includes(h));
         }
-
         function reexecuteScripts(root = document) {
           try {
-            const scripts = Array.from(root.querySelectorAll('script[src]'));
+            const scripts = Array.from(root.querySelectorAll("script[src]"));
             for (const s of scripts) {
-              const src = s.getAttribute('src');
+              const src = s.getAttribute("src");
               if (!shouldHandle(src)) continue;
-
-              // if already executed by our helper, skip
               if (s.dataset.__ad_ran) continue;
-
-              const newScript = document.createElement('script');
-              // copy attributes except src (we'll set it) and data markers
+              const newScript = document.createElement("script");
               for (const attr of s.attributes) {
-                if (attr.name === 'src') continue;
+                if (attr.name === "src") continue;
                 newScript.setAttribute(attr.name, attr.value);
               }
               newScript.src = src;
               newScript.async = s.async;
-              newScript.dataset.__ad_ran = '1';
-
+              newScript.dataset.__ad_ran = "1";
               s.parentNode?.insertBefore(newScript, s);
               s.parentNode?.removeChild(s);
             }
           } catch (err) {
-            // avoid breaking the page
-            console.error('reexecuteScripts error', err);
+            console.error("reexecuteScripts error", err);
           }
         }
-
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', () => reexecuteScripts(document));
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", () => reexecuteScripts(document));
         } else {
           reexecuteScripts(document);
         }
-
-        document.addEventListener('astro:after-swap', () => reexecuteScripts(document));
+        document.addEventListener("astro:after-swap", () => reexecuteScripts(document));
       })();
     </script>
   </body>
