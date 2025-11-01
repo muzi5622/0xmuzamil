@@ -23,9 +23,6 @@ timezone: "Asia/Karachi"
 
 ![AWS S3 Deployment](/aws-web1.png)
 
-<script async="async" data-cfasync="false" src="//pl27965007.effectivegatecpm.com/b6a41421a0c168a58753dacfe5fbedfa/invoke.js"></script>
-<div id="container-b6a41421a0c168a58753dacfe5fbedfa"></div>
-
 ## 🧭 Table of Contents
 
 - [🚀 CI/CD Deployment of Static Website to AWS S3 (`web-pipline`)](#-cicd-deployment-of-static-website-to-aws-s3-web-pipline)
