@@ -117,7 +117,59 @@ const nextPost =
       <Content />
     </article>
 
-    <!-- Ads removed from post details -->
+    <!-- HighPerformanceFormat mid-post ad injector -->
+    <div id="hpf-ad-mid-placeholder"></div>
+
+    <script is:inline data-astro-rerun>
+      (function () {
+        function insertHPFMidAd() {
+          try {
+            const article = document.getElementById("article");
+            if (!article) return;
+            // Avoid inserting multiple times
+            if (article.querySelector('[data-hpf-mid]')) return;
+
+            // Prefer paragraphs as insertion points; fallback to first child
+            const paragraphs = Array.from(article.querySelectorAll("p"));
+            let refNode = null;
+            if (paragraphs.length) {
+              const idx = Math.floor(paragraphs.length / 2);
+              refNode = paragraphs[idx];
+            } else {
+              refNode = article.firstElementChild;
+            }
+
+            const wrapper = document.createElement("div");
+            wrapper.setAttribute("data-hpf-mid", "1");
+            wrapper.className = "my-6 flex justify-center";
+
+            // atOptions must run before loading invoke.js
+            const atOptionsScript = document.createElement("script");
+            atOptionsScript.type = "text/javascript";
+            atOptionsScript.innerHTML = "atOptions = { 'key' : '5720c675ed7e86d1fc1cd95cc7de6ab1', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };";
+            wrapper.appendChild(atOptionsScript);
+
+            const invoke = document.createElement("script");
+            invoke.type = "text/javascript";
+            invoke.src = "//www.highperformanceformat.com/5720c675ed7e86d1fc1cd95cc7de6ab1/invoke.js";
+            wrapper.appendChild(invoke);
+
+            if (refNode && refNode.parentNode) {
+              refNode.parentNode.insertBefore(wrapper, refNode);
+            } else {
+              article.appendChild(wrapper);
+            }
+          } catch (e) {
+            // Fail silently; ad shouldn't break the page
+          }
+        }
+
+        // Run on initial load
+        insertHPFMidAd();
+        // Re-run after Astro swaps (client navigation)
+        document.addEventListener("astro:after-swap", insertHPFMidAd);
+      })();
+    </script>
 
     <EditPost class="sm:hidden" {hideEditPost} {post} />
 
