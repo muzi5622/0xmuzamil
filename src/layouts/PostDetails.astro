@@ -122,7 +122,61 @@ const nextPost =
       <script type='text/javascript' src='//pl27965096.effectivegatecpm.com/e7/3e/5e/e73e5e2d2cb7b7a1fb0f3fe5d7de241b.js'></script>
     </div>
 
-    <hr class="my-8 border-dashed" />
+    <!-- Mid-post ad: HighPerformanceFormat (inserted dynamically into the middle paragraph) -->
+    <script is:inline>
+      (function () {
+        const AT_SRC = "//www.highperformanceformat.com/5720c675ed7e86d1fc1cd95cc7de6ab1/invoke.js";
+        const AT_INLINE = "atOptions = { 'key' : '5720c675ed7e86d1fc1cd95cc7de6ab1', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };";
+
+        function insertMidPostAd() {
+          try {
+            const article = document.getElementById('article');
+            if (!article) return;
+
+            // avoid duplicate insertion
+            if (article.querySelector('[data-hpf-ad]')) return;
+
+            const paragraphs = Array.from(article.querySelectorAll('p'));
+            let insertPoint = null;
+
+            if (paragraphs.length > 0) {
+              const idx = Math.floor(paragraphs.length / 2);
+              // place after the paragraph at idx
+              insertPoint = paragraphs[idx].nextSibling;
+            }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'my-6 flex justify-center';
+            wrapper.setAttribute('data-hpf-ad', '1');
+
+            // inline config script
+            const inline = document.createElement('script');
+            inline.type = 'text/javascript';
+            inline.text = AT_INLINE;
+            wrapper.appendChild(inline);
+
+            // external invoke script
+            const ext = document.createElement('script');
+            ext.type = 'text/javascript';
+            ext.src = AT_SRC;
+            wrapper.appendChild(ext);
+
+            if (insertPoint) article.insertBefore(wrapper, insertPoint);
+            else article.appendChild(wrapper);
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.error('insertMidPostAd error', err);
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', insertMidPostAd);
+        } else {
+          insertMidPostAd();
+        }
+        document.addEventListener('astro:after-swap', insertMidPostAd);
+      })();
+    </script>
 
     <EditPost class="sm:hidden" {hideEditPost} {post} />
 
