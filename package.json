@@ -4,12 +4,8 @@
   "version": "5.5.0",
 "scripts": {
   "dev": "npx astro dev",
-  "build": "npx astro build && npx pagefind --source dist",
-  "preview": "npx astro preview",
-  "sync": "npx astro sync",
-  "format:check": "prettier --check .",
-  "format": "prettier --write .",
-  "lint": "eslint ."
+  "build": "npm install && npx astro build && npx pagefind --source dist",
+  "preview": "npx astro preview"
 },
   "dependencies": {
     "@astrojs/rss": "^4.0.12",
