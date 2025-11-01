@@ -116,6 +116,53 @@ const structuredData = {
   </head>
   <body>
     <slot />
+    <script is:inline>
+      (function () {
+        const adHosts = ['highperformanceformat.com', 'effectivegatecpm.com'];
+
+        function shouldHandle(src) {
+          if (!src) return false;
+          return adHosts.some(h => src.includes(h));
+        }
+
+        function reexecuteScripts(root = document) {
+          try {
+            const scripts = Array.from(root.querySelectorAll('script[src]'));
+            for (const s of scripts) {
+              const src = s.getAttribute('src');
+              if (!shouldHandle(src)) continue;
+
+              // if already executed by our helper, skip
+              if (s.dataset.__ad_ran) continue;
+
+              const newScript = document.createElement('script');
+              // copy attributes except src (we'll set it) and data markers
+              for (const attr of s.attributes) {
+                if (attr.name === 'src') continue;
+                newScript.setAttribute(attr.name, attr.value);
+              }
+              newScript.src = src;
+              newScript.async = s.async;
+              newScript.dataset.__ad_ran = '1';
+
+              s.parentNode?.insertBefore(newScript, s);
+              s.parentNode?.removeChild(s);
+            }
+          } catch (err) {
+            // avoid breaking the page
+            console.error('reexecuteScripts error', err);
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => reexecuteScripts(document));
+        } else {
+          reexecuteScripts(document);
+        }
+
+        document.addEventListener('astro:after-swap', () => reexecuteScripts(document));
+      })();
+    </script>
   </body>
 </html>
 
