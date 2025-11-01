@@ -116,6 +116,61 @@ const structuredData = {
   </head>
   <body>
     <slot />
+    <script is:inline>
+      (function () {
+        // Re-execute third-party external scripts that Astro doesn't run on client-side swaps.
+        const adHosts = [
+          'highperformanceformat.com',
+          'effectivegatecpm.com'
+        ];
+
+        function reexecExternalAdScripts(root = document) {
+          try {
+            const scripts = Array.from(root.querySelectorAll('script[src]'));
+            for (const s of scripts) {
+              const src = s.getAttribute('src') || '';
+              if (!src) continue;
+              if (!adHosts.some(h => src.includes(h))) continue;
+              // Skip if already re-executed
+              if (s.dataset.__adExecuted === 'true') continue;
+
+              const newScript = document.createElement('script');
+              // copy attributes
+              for (const attr of s.attributes) {
+                if (attr.name === 'src') continue;
+                newScript.setAttribute(attr.name, attr.value);
+              }
+              newScript.src = src;
+              newScript.async = s.async;
+
+              // mark original and the new one to avoid double-execution
+              s.dataset.__adExecuted = 'true';
+              newScript.dataset.__adExecuted = 'true';
+
+              // Replace the original script with the new one to trigger execution
+              s.parentNode?.insertBefore(newScript, s);
+              s.parentNode?.removeChild(s);
+            }
+          } catch (e) {
+            // swallow errors to avoid breaking the page
+            console.error('reexecExternalAdScripts error', e);
+          }
+        }
+
+        // Run on first load
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+          reexecExternalAdScripts(document);
+        } else {
+          window.addEventListener('DOMContentLoaded', () => reexecExternalAdScripts(document));
+        }
+
+        // Run after Astro client-side navigation swaps content
+        document.addEventListener('astro:after-swap', (e) => {
+          // e.detail?.html or simply scan the whole document
+          reexecExternalAdScripts(document);
+        });
+      })();
+    </script>
   </body>
 </html>
 
