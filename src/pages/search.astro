@@ -10,23 +10,17 @@ import { SITE } from "@/config";
 <Layout title={`Search | ${SITE.title}`}>
   <Header />
   <Main pageTitle="Search" pageDesc="Search any article ...">
-    <!-- Use default Pagefind UI -->
     <pagefind-ui></pagefind-ui>
   </Main>
   <Footer />
 </Layout>
 
-<!-- Load the Pagefind search index -->
 <script type="module" src="/pagefind/pagefind.js"></script>
 
 <style is:global>
   pagefind-ui {
     display: block;
     margin-top: 1rem;
-  }
-
-  /* Customize UI colors if you want */
-  pagefind-ui {
     --pagefind-ui-font: var(--font-mono);
     --pagefind-ui-text: var(--foreground);
     --pagefind-ui-background: var(--background);
