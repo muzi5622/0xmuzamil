@@ -141,33 +141,71 @@ const structuredData = {
     <!-- Cleanup for third-party injected scripts -->
     <script is:inline>
       (function () {
+        // Hosts to handle (expand if you add more providers)
         const adHosts = ["highperformanceformat.com", "effectivegatecpm.com"];
-        function shouldHandle(src) {
+
+        function srcMatchesHost(src) {
           if (!src) return false;
           return adHosts.some((h) => src.includes(h));
         }
+
+        // Heuristic to detect inline config blocks (e.g. `atOptions = { ... }`)
+        function inlineLooksLikeAdConfig(text) {
+          if (!text) return false;
+          return /atOptions\s*=|effectivegatecpm|highperformanceformat/.test(text);
+        }
+
+        // Re-execute scripts (both external and inline) in document order
         function reexecuteScripts(root = document) {
           try {
-            const scripts = Array.from(root.querySelectorAll("script[src]"));
+            const scripts = Array.from(root.querySelectorAll("script"));
             for (const s of scripts) {
+              // skip scripts we've already handled
+              if (s.dataset?.__ad_ran) continue;
+
               const src = s.getAttribute("src");
-              if (!shouldHandle(src)) continue;
-              if (s.dataset.__ad_ran) continue;
-              const newScript = document.createElement("script");
-              for (const attr of s.attributes) {
-                if (attr.name === "src") continue;
-                newScript.setAttribute(attr.name, attr.value);
+
+              // handle external scripts from known ad hosts
+              if (src && srcMatchesHost(src)) {
+                const newScript = document.createElement("script");
+                // copy attributes except src (we'll set it explicitly)
+                for (const attr of s.attributes) {
+                  if (attr.name === "src") continue;
+                  newScript.setAttribute(attr.name, attr.value);
+                }
+                newScript.src = src;
+                // preserve async/defer if present
+                if (s.hasAttribute("async")) newScript.async = true;
+                if (s.hasAttribute("defer")) newScript.defer = true;
+                newScript.dataset.__ad_ran = "1";
+                s.parentNode?.insertBefore(newScript, s);
+                s.parentNode?.removeChild(s);
+                continue;
               }
-              newScript.src = src;
-              newScript.async = s.async;
-              newScript.dataset.__ad_ran = "1";
-              s.parentNode?.insertBefore(newScript, s);
-              s.parentNode?.removeChild(s);
+
+              // handle inline config blocks that ad vendors expect (e.g. atOptions)
+              if (!src && inlineLooksLikeAdConfig(s.textContent)) {
+                const newScript = document.createElement("script");
+                // preserve type if present
+                for (const attr of s.attributes) {
+                  newScript.setAttribute(attr.name, attr.value);
+                }
+                // set text content to re-run the inline script
+                newScript.text = s.textContent || "";
+                newScript.dataset.__ad_ran = "1";
+                s.parentNode?.insertBefore(newScript, s);
+                s.parentNode?.removeChild(s);
+                continue;
+              }
             }
           } catch (err) {
+            // Keep errors non-fatal — don't break the page if ad reexec fails
+            // eslint-disable-next-line no-console
             console.error("reexecuteScripts error", err);
           }
         }
+
+        // Run on initial load and after client-side navigation (Astro swaps)
         if (document.readyState === "loading") {
           document.addEventListener("DOMContentLoaded", () => reexecuteScripts(document));
         } else {
