@@ -212,6 +212,69 @@ const structuredData = {
           reexecuteScripts(document);
         }
         document.addEventListener("astro:after-swap", () => reexecuteScripts(document));
+
+        // Ensure site-wide header/footer ads are present (defensive reinjector)
+        function ensureSiteAds() {
+          try {
+            // Header EffectiveGate
+            const header = document.querySelector("header");
+            if (header) {
+              // Ensure container exists
+              const egContainerId = "container-b6a41421a0c168a58753dacfe5fbedfa";
+              let egContainer = document.getElementById(egContainerId);
+              if (!egContainer) {
+                egContainer = document.createElement("div");
+                egContainer.id = egContainerId;
+                header.appendChild(egContainer);
+              }
+
+              // Ensure script present
+              const egScriptSrc = "//pl27965007.effectivegatecpm.com/b6a41421a0c168a58753dacfe5fbedfa/invoke.js";
+              const hasEg = Array.from(document.scripts).some(s => s.src && s.src.includes("pl27965007.effectivegatecpm.com"));
+              if (!hasEg) {
+                const s = document.createElement("script");
+                s.async = true;
+                s.setAttribute("data-cfasync", "false");
+                s.src = egScriptSrc;
+                s.dataset.__ad_ran = "1";
+                header.appendChild(s);
+              }
+            }
+
+            // Footer HighPerformanceFormat (key: a58082c5c54ab00091cf834a78414be8)
+            const footer = document.querySelector("footer");
+            if (footer) {
+              const hpfMarker = footer.querySelector("[data-hpf-footer]");
+              if (!hpfMarker) {
+                const wrapper = document.createElement("div");
+                wrapper.setAttribute("data-hpf-footer", "1");
+                wrapper.className = "flex justify-center py-4";
+
+                const atOptions = document.createElement("script");
+                atOptions.type = "text/javascript";
+                atOptions.innerHTML = "atOptions = { 'key' : 'a58082c5c54ab00091cf834a78414be8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };";
+                wrapper.appendChild(atOptions);
+
+                const invoke = document.createElement("script");
+                invoke.type = "text/javascript";
+                invoke.src = "//www.highperformanceformat.com/a58082c5c54ab00091cf834a78414be8/invoke.js";
+                wrapper.appendChild(invoke);
+
+                footer.appendChild(wrapper);
+              }
+            }
+          } catch (e) {
+            // Non-fatal — don't break the page
+          }
+        }
+
+        // Run ensureSiteAds on initial load and after swaps
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", ensureSiteAds);
+        } else {
+          ensureSiteAds();
+        }
+        document.addEventListener("astro:after-swap", ensureSiteAds);
       })();
     </script>
   </body>
