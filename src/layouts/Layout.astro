@@ -11,10 +11,13 @@ export interface Props {
   profile?: string;
   description?: string;
   ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   canonicalURL?: string;
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  schema?: Record<string, any>;  // Allow passing custom schema.org data
 }
 
 const {
@@ -23,6 +26,8 @@ const {
   profile = SITE.profile,
   description = SITE.desc,
   ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
+  ogImageWidth = 1200,  // Default OG image width
+  ogImageHeight = 630,  // Default OG image height
   canonicalURL = new URL(Astro.url.pathname, Astro.site),
   pubDatetime,
   modDatetime,
@@ -31,7 +36,9 @@ const {
 
 const socialImageURL = new URL(ogImage, Astro.site);
 
-const structuredData = {
+const { schema } = Astro.props;
+
+const structuredData = schema || {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: `${title}`,
@@ -76,6 +83,8 @@ const structuredData = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={socialImageURL} />
+    <meta property="og:image:width" content={ogImageWidth.toString()} />
+    <meta property="og:image:height" content={ogImageHeight.toString()} />
 
     <!-- Article Published/Modified time -->
     {pubDatetime && (
@@ -129,8 +138,7 @@ const structuredData = {
       gtag("js", new Date());
       gtag("config", "G-63XWFN2EZ7");
     </script>
-
-    <!-- Google AdSense -->
+        <!-- Google AdSense -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4869450881750448"
@@ -144,148 +152,6 @@ const structuredData = {
   <body>
     <slot />
     <Analytics />
-
-    <!-- Cleanup for third-party injected scripts -->
-    <script is:inline>
-      (function () {
-        // Hosts to handle (expand if you add more providers)
-        const adHosts = ["highperformanceformat.com", "effectivegatecpm.com"];
-
-        function srcMatchesHost(src) {
-          if (!src) return false;
-          return adHosts.some((h) => src.includes(h));
-        }
-
-        // Heuristic to detect inline config blocks (e.g. `atOptions = { ... }`)
-        function inlineLooksLikeAdConfig(text) {
-          if (!text) return false;
-          return /atOptions\s*=|effectivegatecpm|highperformanceformat/.test(text);
-        }
-
-        // Re-execute scripts (both external and inline) in document order
-        function reexecuteScripts(root = document) {
-          try {
-            const scripts = Array.from(root.querySelectorAll("script"));
-            for (const s of scripts) {
-              // skip scripts we've already handled
-              if (s.dataset?.__ad_ran) continue;
-
-              const src = s.getAttribute("src");
-
-              // handle external scripts from known ad hosts
-              if (src && srcMatchesHost(src)) {
-                const newScript = document.createElement("script");
-                // copy attributes except src (we'll set it explicitly)
-                for (const attr of s.attributes) {
-                  if (attr.name === "src") continue;
-                  newScript.setAttribute(attr.name, attr.value);
-                }
-                newScript.src = src;
-                // preserve async/defer if present
-                if (s.hasAttribute("async")) newScript.async = true;
-                if (s.hasAttribute("defer")) newScript.defer = true;
-                newScript.dataset.__ad_ran = "1";
-                s.parentNode?.insertBefore(newScript, s);
-                s.parentNode?.removeChild(s);
-                continue;
-              }
-
-              // handle inline config blocks that ad vendors expect (e.g. atOptions)
-              if (!src && inlineLooksLikeAdConfig(s.textContent)) {
-                const newScript = document.createElement("script");
-                // preserve type if present
-                for (const attr of s.attributes) {
-                  newScript.setAttribute(attr.name, attr.value);
-                }
-                // set text content to re-run the inline script
-                newScript.text = s.textContent || "";
-                newScript.dataset.__ad_ran = "1";
-                s.parentNode?.insertBefore(newScript, s);
-                s.parentNode?.removeChild(s);
-                continue;
-              }
-            }
-          } catch (err) {
-            // Keep errors non-fatal — don't break the page if ad reexec fails
-            // eslint-disable-next-line no-console
-            console.error("reexecuteScripts error", err);
-          }
-        }
-
-        // Run on initial load and after client-side navigation (Astro swaps)
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", () => reexecuteScripts(document));
-        } else {
-          reexecuteScripts(document);
-        }
-        document.addEventListener("astro:after-swap", () => reexecuteScripts(document));
-
-        // Ensure site-wide header/footer ads are present (defensive reinjector)
-        function ensureSiteAds() {
-          try {
-            // Header EffectiveGate
-            const header = document.querySelector("header");
-            if (header) {
-              // Ensure container exists
-              const egContainerId = "container-b6a41421a0c168a58753dacfe5fbedfa";
-              let egContainer = document.getElementById(egContainerId);
-              if (!egContainer) {
-                egContainer = document.createElement("div");
-                egContainer.id = egContainerId;
-                header.appendChild(egContainer);
-              }
-
-              // Ensure script present
-              const egScriptSrc = "//pl27965007.effectivegatecpm.com/b6a41421a0c168a58753dacfe5fbedfa/invoke.js";
-              const hasEg = Array.from(document.scripts).some(s => s.src && s.src.includes("pl27965007.effectivegatecpm.com"));
-              if (!hasEg) {
-                const s = document.createElement("script");
-                s.async = true;
-                s.setAttribute("data-cfasync", "false");
-                s.src = egScriptSrc;
-                s.dataset.__ad_ran = "1";
-                header.appendChild(s);
-              }
-            }
-
-            // Footer HighPerformanceFormat (key: a58082c5c54ab00091cf834a78414be8)
-            const footer = document.querySelector("footer");
-            if (footer) {
-              const hpfMarker = footer.querySelector("[data-hpf-footer]");
-              if (!hpfMarker) {
-                const wrapper = document.createElement("div");
-                wrapper.setAttribute("data-hpf-footer", "1");
-                wrapper.className = "flex justify-center py-4";
-
-                const atOptions = document.createElement("script");
-                atOptions.type = "text/javascript";
-                atOptions.innerHTML = "atOptions = { 'key' : 'a58082c5c54ab00091cf834a78414be8', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };";
-                wrapper.appendChild(atOptions);
-
-                const invoke = document.createElement("script");
-                invoke.type = "text/javascript";
-                invoke.src = "//www.highperformanceformat.com/a58082c5c54ab00091cf834a78414be8/invoke.js";
-                wrapper.appendChild(invoke);
-
-                footer.appendChild(wrapper);
-              }
-            }
-            
-            // Mid-post insertion removed (post-level ads disabled)
-          } catch (e) {
-            // Non-fatal — don't break the page
-          }
-        }
-
-        // Run ensureSiteAds on initial load and after swaps
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", ensureSiteAds);
-        } else {
-          ensureSiteAds();
-        }
-        document.addEventListener("astro:after-swap", ensureSiteAds);
-      })();
-    </script>
   </body>
 </html>
 
