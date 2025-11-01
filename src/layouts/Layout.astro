@@ -12,7 +12,6 @@ export interface Props {
   description?: string;
   ogImage?: string;
   canonicalURL?: string;
-  adScriptSrc?: string;
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
@@ -25,7 +24,6 @@ const {
   description = SITE.desc,
   ogImage = SITE.ogImage ? `/${SITE.ogImage}` : "/og.png",
   canonicalURL = new URL(Astro.url.pathname, Astro.site),
-  adScriptSrc,
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
@@ -101,10 +99,6 @@ const structuredData = {
       set:html={JSON.stringify(structuredData)}
     />
 
-    {adScriptSrc && (
-      <script type="text/javascript" src={adScriptSrc}></script>
-    )}
-
     <!-- Enable RSS feed auto-discovery -->
     <link
       rel="alternate"
@@ -171,11 +165,8 @@ const structuredData = {
 
               const src = s.getAttribute("src");
 
-              // (debug logging removed)
-
               // handle external scripts from known ad hosts
               if (src && srcMatchesHost(src)) {
-                // executing external script
                 const newScript = document.createElement("script");
                 // copy attributes except src (we'll set it explicitly)
                 for (const attr of s.attributes) {
@@ -194,7 +185,6 @@ const structuredData = {
 
               // handle inline config blocks that ad vendors expect (e.g. atOptions)
               if (!src && inlineLooksLikeAdConfig(s.textContent)) {
-                // executing inline config
                 const newScript = document.createElement("script");
                 // preserve type if present
                 for (const attr of s.attributes) {
