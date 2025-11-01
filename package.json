@@ -3,9 +3,7 @@
   "type": "module",
   "version": "5.5.0",
 "scripts": {
-  "dev": "npx astro dev",
-  "build": "npm install && npx astro build && npx pagefind --source dist",
-  "preview": "npx astro preview"
+  "build": "npx astro build && npx pagefind --source dist"
 },
   "dependencies": {
     "@astrojs/rss": "^4.0.12",
