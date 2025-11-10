@@ -38,7 +38,7 @@ This guide shows how to:
 2. Create a realistic student card using Canva  
 3. Transform the card into a realistic photo with AI (ChatGPT/Gemini)  
 4. Register for Google AI Student account  
-5. Optionally get Pro access
+
 
 ---
 
