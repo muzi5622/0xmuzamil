@@ -63,6 +63,8 @@ This guide shows how to:
    > "Take this digital student card and transform it into a highly realistic photo as if it was taken with a real camera. Ensure natural lighting, subtle shadows, and realistic textures. The card should look slightly worn or handled like a real physical card, with slight reflections and soft focus. Make the colors and text appear natural, as if photographed in a normal indoor environment."  
 3. Save the resulting realistic image
 
+![AI Generated Student card](/ai-studnet-card.webp)
+
 ---
 ## 🧱 3. Create a Temporary Email
 
