@@ -76,7 +76,6 @@ This guide shows how to:
 3. Keep the temporary email webpage open so you can receive the verification code.
 
 ---
-![Google AI Student Pro](/gemini-pro-for-free.webp)
 
 ## 🌐 Register for Google AI Student (Gemini University Offer)
 
