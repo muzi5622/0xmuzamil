@@ -54,6 +54,8 @@ This guide shows how to:
    - Photo: Optional placeholder  
 4. Download as **PNG** or **JPG**
 
+![Digital Student card](/ai-studnet-card-before.webp)
+
 ---
 
 ## 📸 2. Transform into a Realistic Photo
