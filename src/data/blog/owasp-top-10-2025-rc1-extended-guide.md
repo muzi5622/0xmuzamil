@@ -6,11 +6,8 @@ slug: owasp-top-10-2025-rc1-extended-guide
 featured: true
 draft: false
 tags:
-  - OWASP
-  - Application Security
   - Bug Bounty
   - Penetration Testing
-  - Secure Development
   - Web Security
   - Cybersecurity
   - DevSecOps
